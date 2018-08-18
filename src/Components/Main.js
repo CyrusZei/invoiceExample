@@ -39,6 +39,12 @@ class Main extends Component {
     }));
   };
 
+  handleRemoveInvoice = index => {
+    const invoices = [...this.state.invoices];
+    invoices.splice(index, 1);
+    this.setState({ invoices });
+  };
+
   handleTextInput = (e, name) => {
     this.setState({
       invoice: { ...this.state.invoice, [name]: e.target.value }
@@ -63,7 +69,9 @@ class Main extends Component {
               <InvoicesItem>{invoice.name}</InvoicesItem>
               <InvoicesItem>{invoice.total}</InvoicesItem>
               <InvoicesItem>Edit</InvoicesItem>
-              <InvoicesItem>Delete</InvoicesItem>
+              <InvoicesItem onClick={() => this.handleRemoveInvoice(index)}>
+                Delete
+              </InvoicesItem>
             </InvoicesTable>
           );
         })}

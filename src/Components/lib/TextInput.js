@@ -8,7 +8,7 @@ const InputLabel = styled.label``;
 
 const TextInput = ({ stateValue, textName, changeState, title }) => {
   return (
-    <InputLabel for={textName}>
+    <InputLabel htmlfor={textName}>
       {title}
       <Text
         type="text"

@@ -9,10 +9,12 @@ const Container = styled.div`
   width: 500px;
 `;
 
-const Button = ({ title, addInvoice }) => {
+const Button = ({ title, addInvoice, isEditing }) => {
   return (
     <Container>
-      <NormalButton onClick={addInvoice}>{title}</NormalButton>
+      <NormalButton onClick={addInvoice}>
+        {isEditing ? "Save" : "Add"}
+      </NormalButton>
     </Container>
   );
 };

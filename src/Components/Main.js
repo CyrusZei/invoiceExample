@@ -21,6 +21,10 @@ const InvoicesItem = styled.div`
   margin-bottom: 10px;
 `;
 
+const HrLine = styled.hr`
+  width: 100%;
+`;
+
 class Main extends Component {
   constructor() {
     super();
@@ -29,14 +33,49 @@ class Main extends Component {
       invoice: {
         name: "",
         total: 0
-      }
+      },
+      isEditing: false,
+      currentInvoiceIndex: null
     };
   }
   handleAddInvoice = () => {
-    const invoice = this.state.invoice;
-    this.setState(prevState => ({
-      invoices: [...prevState.invoices, invoice]
-    }));
+    if (this.state.isEditing) {
+      const currentState = { ...this.state };
+      const newInvoice = {
+        name: this.state.invoice.name,
+        total: this.state.invoice.total
+      };
+      currentState.invoices.splice(
+        this.state.currentInvoiceIndex,
+        1,
+        newInvoice
+      );
+
+      currentState.invoice.name = "";
+      currentState.invoice.total = "";
+      currentState.isEditing = false;
+
+      this.setState({ ...currentState });
+    } else {
+      const invoice = { ...this.state.invoice };
+      this.setState(prevState => ({
+        invoices: [...prevState.invoices, invoice],
+        invoice: {
+          name: "",
+          total: 0
+        }
+      }));
+    }
+  };
+
+  handleEditInvoice = index => {
+    const currentInvoices = { ...this.state };
+    currentInvoices.isEditing = true;
+    currentInvoices.invoices[index];
+    currentInvoices.invoice.name = currentInvoices.invoices[index].name;
+    currentInvoices.invoice.total = currentInvoices.invoices[index].total;
+    currentInvoices.currentInvoiceIndex = index;
+    this.setState({ ...currentInvoices });
   };
 
   handleRemoveInvoice = index => {
@@ -55,7 +94,7 @@ class Main extends Component {
     return (
       <Container>
         <h1>Invoice Crud example</h1>
-        <hr />
+        <HrLine />
         <h2>Invoices</h2>
         <InvoicesTable>
           <InvoicesItem>Name</InvoicesItem>
@@ -68,15 +107,17 @@ class Main extends Component {
             <InvoicesTable key={index}>
               <InvoicesItem>{invoice.name}</InvoicesItem>
               <InvoicesItem>{invoice.total}</InvoicesItem>
-              <InvoicesItem>Edit</InvoicesItem>
+              <InvoicesItem onClick={() => this.handleEditInvoice(index)}>
+                Edit
+              </InvoicesItem>
               <InvoicesItem onClick={() => this.handleRemoveInvoice(index)}>
                 Delete
               </InvoicesItem>
             </InvoicesTable>
           );
         })}
-        <hr />
-        <h2>Add invoice</h2>
+        <HrLine />
+        <h2>{this.state.isEditing ? "Edit invoice" : "Add invoice"}</h2>
         <TextInput
           textName="name"
           stateValue={this.state.invoice}
@@ -89,7 +130,10 @@ class Main extends Component {
           changeState={this.handleTextInput}
           title="Price"
         />
-        <Button title="Add Invoice" addInvoice={this.handleAddInvoice} />
+        <Button
+          isEditing={this.state.isEditing}
+          addInvoice={this.handleAddInvoice}
+        />
       </Container>
     );
   }
